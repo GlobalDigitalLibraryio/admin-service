@@ -1,0 +1,12 @@
+/.idea
+/.history
+/.serverless
+/.pytest_cache
+node_modules
+venv**
+**/target
+**/.DS_Store
+**/venv
+**/__pycache__
+**/*.pyc
+/log

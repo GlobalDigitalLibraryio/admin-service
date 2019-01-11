@@ -1,0 +1,70 @@
+service: admin-service
+
+provider:
+  name: aws
+  runtime: python2.7
+  stage: prod
+  region: eu-central-1
+  endpointType: PRIVATE
+  role: arn:aws:iam::${env:GDL_ACCOUNT}:role/${env:SERVERLESS_IAM_ROLE}
+  tags:
+    VERSION: "0.1"
+  deploymentBucket:
+    name: ${env:GDL_SERVERLESS_DEPLOYMENT_BUCKET}
+
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+      Condition:
+        StringEquals:
+          aws:SourceVpce:
+            - '${env:VPC_ENDPOINT}'
+
+package:
+  individually: true
+  exclude:
+    - ./**
+
+functions:
+  analytics:
+    handler: handler.main
+    module: functions/analytics
+    events:
+      - http:
+          path: analytics
+          method: get
+          request:
+            parameters:
+              querystrings:
+                days: false
+                n: false
+
+    environment:
+      ANALYTICS_CREDENTIALS: ${env:ANALYTICS_CREDENTIALS}
+      ANALYTICS_VIEW_ID: ${env:ANALYTICS_VIEW_ID}
+    package:
+      include:
+        - functions/analytics/*.py
+        - functions/analytics/gdl/*.py
+      exclude:
+        - "**tests/**"
+
+plugins:
+  - serverless-vpc-discovery
+  - serverless-python-requirements
+  - serverless-offline-python
+
+custom:
+  vpc:
+    vpcName: ${env:VPC}
+    subnetNames:
+      - '${env:GDL_ENVIRONMENT}.private_a.gdl'
+      - '${env:GDL_ENVIRONMENT}.private_b.gdl'
+    securityGroupNames:
+      - 'serverless-security_group'
+  pythonRequirements:
+    dockerizePip: non-linux
+    slim: true
