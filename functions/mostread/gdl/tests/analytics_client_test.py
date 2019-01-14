@@ -1,7 +1,7 @@
-import pytest
 from unittest import TestCase
-import json
+
 from mock import Mock, patch
+
 from ..analytics_client import AnalyticsClient
 
 

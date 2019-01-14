@@ -29,12 +29,12 @@ package:
     - ./**
 
 functions:
-  analytics:
+  mostread:
     handler: handler.main
-    module: functions/analytics
+    module: functions/mostread
     events:
       - http:
-          path: analytics
+          path: most-read
           method: get
           request:
             parameters:
@@ -47,8 +47,8 @@ functions:
       ANALYTICS_VIEW_ID: ${env:ANALYTICS_VIEW_ID}
     package:
       include:
-        - functions/analytics/*.py
-        - functions/analytics/gdl/*.py
+        - functions/mostread/*.py
+        - functions/mostread/gdl/*.py
       exclude:
         - "**tests/**"
 
