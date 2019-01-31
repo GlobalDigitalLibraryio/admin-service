@@ -55,7 +55,6 @@ functions:
 plugins:
   - serverless-vpc-discovery
   - serverless-python-requirements
-  - serverless-offline-python
 
 custom:
   vpc:
