@@ -3,7 +3,7 @@ service: admin-service
 provider:
   name: aws
   runtime: python2.7
-  stage: prod
+  stage: ${env:GDL_ENVIRONMENT}
   region: eu-central-1
   endpointType: PRIVATE
   role: arn:aws:iam::${env:GDL_ACCOUNT}:role/${env:SERVERLESS_IAM_ROLE}
@@ -55,6 +55,7 @@ functions:
 plugins:
   - serverless-vpc-discovery
   - serverless-python-requirements
+  - serverless-plugin-warmup
 
 custom:
   vpc:
@@ -67,3 +68,6 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
     slim: true
+  warmup:
+    default:
+      - prod

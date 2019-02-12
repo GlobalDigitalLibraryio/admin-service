@@ -15,6 +15,13 @@ csv_writer = CsvWriter()
 analytics = MostRead(analytics_client, csv_writer)
 
 
+def is_warmup(event):
+    return event.get('source', '') == "serverless-plugin-warmup"
+
+
 def main(event, context):
+    if is_warmup(event):
+        return "Warm"
+
     return analytics.main(event)
 
