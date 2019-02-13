@@ -1,0 +1,51 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Admin Service
+  license:
+    name: GDL v3.0
+servers:
+  - url: https://api.test.digitallibrary.io/admin-service
+  - url: https://api.staging.digitallibrary.io/admin-service
+paths:
+  /most-read:
+    get:
+      summary: Retrieve a CSV-file of the most read books in the Global Digital Library
+      operationId: mostRead
+      security:
+        - OAuth2: [admin:reports]
+      tags:
+        - Reports
+      parameters:
+        - name: days
+          in: query
+          description: The number of days to report for. (Min 1, Max 3650, Default 7).
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: n
+          in: query
+          description: The number of books to include in the report. (Min 1, Max 1000, Default 20).
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A CSV-file containing the most read books for the selected period
+          content:
+            text/csv:
+              example: >
+                Name, Count
+                Name 1, 100
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://digitallibrary.eu.auth0.com/authorize
+          scopes:
+            admin:reports: Grants reporting access
+
