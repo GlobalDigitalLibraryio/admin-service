@@ -69,5 +69,5 @@ custom:
     dockerizePip: non-linux
     slim: true
   warmup:
-    default:
+    enabled:
       - prod
