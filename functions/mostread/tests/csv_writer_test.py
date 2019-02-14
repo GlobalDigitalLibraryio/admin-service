@@ -1,6 +1,6 @@
 import unittest
 
-from ..csv_writer import CsvWriter
+from gdl.csv_writer import CsvWriter
 
 
 class CsvWriterTest(unittest.TestCase):
@@ -11,3 +11,6 @@ class CsvWriterTest(unittest.TestCase):
     @staticmethod
     def test_write_to_string_with_header():
         assert '''First name,Last name\r\nDonald,Duck\r\nDolly,Duck\r\n''' == CsvWriter().as_csv_string([["Donald", "Duck"], ["Dolly", "Duck"]], ['First name', 'Last name'])
+
+if __name__ == '__main__':
+    unittest.main()

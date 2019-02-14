@@ -2,13 +2,13 @@ service: admin-service
 
 provider:
   name: aws
-  runtime: python2.7
+  runtime: python3.7
   stage: ${env:GDL_ENVIRONMENT}
   region: eu-central-1
   endpointType: PRIVATE
   role: arn:aws:iam::${env:GDL_ACCOUNT}:role/${env:SERVERLESS_IAM_ROLE}
   tags:
-    VERSION: "0.1"
+    VERSION: "0.2"
   deploymentBucket:
     name: ${env:GDL_SERVERLESS_DEPLOYMENT_BUCKET}
 

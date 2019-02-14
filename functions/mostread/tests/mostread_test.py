@@ -1,9 +1,8 @@
 import unittest
-import pytest
 
-from mock import Mock
+from unittest.mock import Mock
 
-from ..mostread import MostRead
+from gdl.mostread import MostRead
 
 
 class MostReadTest(unittest.TestCase):
@@ -55,11 +54,13 @@ class MostReadTest(unittest.TestCase):
         assert response['statusCode'] == 500
         assert response['body'] == "Could not fetch analytics data"
 
-    @staticmethod
-    def test_get_n():
+
+    def test_get_n(self):
         def verify_exception(value):
-            with pytest.raises(ValueError, match=r'n must be an integer between {} and {}'.format(MostRead.MIN_NUM_ITEMS, MostRead.MAX_NUM_ITEMS)):
+            with self.assertRaises(ValueError) as context:
                 MostRead.get_n({'n': value})
+            self.assertTrue("n must be an integer between {} and {}".format(MostRead.MIN_NUM_ITEMS, MostRead.MAX_NUM_ITEMS), str(context.exception))
+
 
         assert MostRead.get_n(None) == MostRead.DEFAULT_NUM_ITEMS
         assert MostRead.get_n({}) == MostRead.DEFAULT_NUM_ITEMS
@@ -71,11 +72,12 @@ class MostReadTest(unittest.TestCase):
         verify_exception(MostRead.MAX_NUM_ITEMS + 1)
         verify_exception(MostRead.MIN_NUM_ITEMS - 1)
 
-    @staticmethod
-    def test_get_days():
+    def test_get_days(self):
         def verify_exception(value):
-            with pytest.raises(ValueError, match=r'days must be an integer between {} and {}'.format(MostRead.MIN_DAYS, MostRead.MAX_DAYS)):
+            with self.assertRaises(ValueError) as context:
                 MostRead.get_days({'days': value})
+            self.assertTrue("days must be an integer between {} and {}".format(MostRead.MIN_DAYS, MostRead.MAX_DAYS), str(context.exception))
+
 
         assert MostRead.get_days(None) == MostRead.DEFAULT_DAYS
         assert MostRead.get_days({}) == MostRead.DEFAULT_DAYS
@@ -87,5 +89,8 @@ class MostReadTest(unittest.TestCase):
         verify_exception(MostRead.MAX_DAYS + 1)
         verify_exception(MostRead.MIN_DAYS - 1)
 
+
+if __name__ == '__main__':
+    unittest.main()
 
 
