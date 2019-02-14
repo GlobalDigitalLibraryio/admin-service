@@ -7,8 +7,8 @@ from gdl.analytics_client import AnalyticsClient
 from gdl.csv_writer import CsvWriter
 from gdl.mostread import MostRead
 
-ANALYTICS_CREDENTIALS = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['ANALYTICS_CREDENTIALS']))['Plaintext']
-ANALYTICS_VIEW_ID = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['ANALYTICS_VIEW_ID']))['Plaintext']
+ANALYTICS_CREDENTIALS = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['ANALYTICS_CREDENTIALS']))['Plaintext'].decode()
+ANALYTICS_VIEW_ID = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['ANALYTICS_VIEW_ID']))['Plaintext'].decode()
 
 analytics_client = AnalyticsClient(ANALYTICS_VIEW_ID, ANALYTICS_CREDENTIALS)
 csv_writer = CsvWriter()

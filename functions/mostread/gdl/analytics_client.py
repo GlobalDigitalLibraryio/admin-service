@@ -14,8 +14,8 @@ class AnalyticsClient:
         self.logger.setLevel(logging.ERROR)
         self.analytics = self._create_analytics(self.analytics_credentials_json, self.analytics_scope)
 
-    @staticmethod
-    def _create_analytics(analytics_credentials_json, analytics_scope):
+
+    def _create_analytics(self, analytics_credentials_json, analytics_scope):
         credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             json.loads(analytics_credentials_json, strict=False), analytics_scope)
 

@@ -7,7 +7,7 @@ class CsvWriter:
         self.delimiter = delim
 
     def as_csv_string(self, item_list, header=None):
-        out = io.BytesIO()
+        out = io.StringIO()
         writer = csv.writer(out, delimiter=self.delimiter)
         if header:
             writer.writerow(header)
