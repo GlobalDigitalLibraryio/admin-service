@@ -63,6 +63,8 @@ functions:
             parameters:
               querystrings:
                 text: true
+    environment:
+      BING_API_KEY: ${env:BING_API_KEY}
     package:
       include:
         - functions/spellcheck/*.py
