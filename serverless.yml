@@ -55,7 +55,11 @@ functions:
   spellcheck:
     handler: handler.main
     module: functions/spellcheck
+    timeout: 120
     events:
+      - http:
+          path: spellcheck
+          method: post
       - http:
           path: spellcheck
           method: get

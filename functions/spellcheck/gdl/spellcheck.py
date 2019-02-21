@@ -1,7 +1,7 @@
-import logging
 import json
-from . import response
+import logging
 
+from . import response
 
 class Spellcheck:
     def __init__(self, bing_client):
@@ -10,25 +10,35 @@ class Spellcheck:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
 
-
     def main(self, event):
         text_to_check = self.get_text(event)
         language = self.get_language(event) or self.default_language
-        spell_response = {'original': text_to_check if text_to_check else ""}
+        spell_response = {'found_errors': False}
 
         if text_to_check:
-            suggestion = self.bing_client.check_spelling(text_to_check, language)
-            if suggestion:
-                spell_response['suggestion'] = suggestion
-
+            report = self.bing_client.check_spelling(text_to_check, language)
+            spell_response['found_errors'] = report.contains_corrections()
+            if report.contains_corrections():
+                spell_response['original'] = text_to_check
+                spell_response['suggestion'] = report.suggestion
+                spell_response['corrections'] = report.corrections
         return response(body=json.dumps(spell_response))
 
     @staticmethod
+    def get_params(event):
+        if event.get("httpMethod") == 'POST':
+            body = event.get("body")
+            return json.loads(body) if body else {}
+        elif event.get("httpMethod") == 'GET':
+            q_params = event.get("queryStringParameters")
+            return q_params if q_params else {}
+        else:
+            return {}
+
+    @staticmethod
     def get_text(event):
-        q_params = event.get("queryStringParameters")
-        return q_params.get("text") if q_params else None
+        return Spellcheck.get_params(event).get("text")
 
     @staticmethod
     def get_language(event):
-        q_params = event.get("queryStringParameters")
-        return q_params.get("language") if q_params else None
+        return Spellcheck.get_params(event).get("language")
