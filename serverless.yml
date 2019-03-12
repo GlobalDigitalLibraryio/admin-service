@@ -8,7 +8,7 @@ provider:
   endpointType: PRIVATE
   role: arn:aws:iam::${env:GDL_ACCOUNT}:role/${env:SERVERLESS_IAM_ROLE}
   tags:
-    VERSION: "0.2"
+    VERSION: "0.3"
   deploymentBucket:
     name: ${env:GDL_SERVERLESS_DEPLOYMENT_BUCKET}
 
@@ -49,6 +49,30 @@ functions:
       include:
         - functions/mostread/*.py
         - functions/mostread/gdl/*.py
+      exclude:
+        - "**tests/**"
+
+  spellcheck:
+    handler: handler.main
+    module: functions/spellcheck
+    timeout: 120
+    events:
+      - http:
+          path: spellcheck
+          method: post
+      - http:
+          path: spellcheck
+          method: get
+          request:
+            parameters:
+              querystrings:
+                text: true
+    environment:
+      BING_API_KEY: ${env:BING_API_KEY}
+    package:
+      include:
+        - functions/spellcheck/*.py
+        - functions/spellcheck/gdl/*.py
       exclude:
         - "**tests/**"
 
