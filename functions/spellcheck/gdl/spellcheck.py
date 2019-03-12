@@ -5,7 +5,7 @@ from . import response
 
 class Spellcheck:
     def __init__(self, bing_client):
-        self.default_language = 'en'
+        self.default_language = 'en-US'
         self.bing_client = bing_client
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
@@ -13,6 +13,8 @@ class Spellcheck:
     def main(self, event):
         text_to_check = self.get_text(event)
         language = self.get_language(event) or self.default_language
+        self.logger.info("TEXT = {}".format(text_to_check))
+        self.logger.info("LANGUAGE = {}".format(language))
         spell_response = {'found_errors': False}
 
         if text_to_check:
