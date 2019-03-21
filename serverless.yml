@@ -29,6 +29,21 @@ package:
     - ./**
 
 functions:
+  slacknotifier:
+    handler: handler.main
+    module: functions/slacknotifier
+    events:
+      - sns:
+          arn: ${env:GDL_SURVEILLANCE_SNS_ARN}
+    environment:
+      SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+    package:
+      include:
+        - functions/slacknotifier/*.py
+        - functions/slacknotifier/gdl/*.py
+      exclude:
+        - "**tests/**"
+
   mostread:
     handler: handler.main
     module: functions/mostread
