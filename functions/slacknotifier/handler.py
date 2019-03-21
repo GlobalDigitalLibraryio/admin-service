@@ -7,7 +7,7 @@ from base64 import b64decode
 from dateutil import parser
 
 SLACK_CHANNEL = "#gdl-alarms"
-SLACK_USER = "gdlbot"
+SLACK_BOT_NAME = "gdlbot"
 SLACK_WEBHOOK_URL = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['SLACK_WEBHOOK_URL']))['Plaintext'].decode()
 
 def is_warmup(event):
@@ -67,7 +67,7 @@ def main(event, context):
         "icon_emoji": emoji_map[event_cond],
         "text": "AWS CloudWatch Notification",
         "channel": SLACK_CHANNEL,
-        "username": SLACK_USER,
+        "username": SLACK_BOT_NAME,
         "attachments": attachments
     }
 
