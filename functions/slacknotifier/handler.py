@@ -11,24 +11,20 @@ SLACK_BOT_NAME = "gdlbot"
 SLACK_WEBHOOK_URL = boto3.client('kms').decrypt(CiphertextBlob=b64decode(os.environ['SLACK_WEBHOOK_URL']))['Plaintext'].decode()
 
 def is_warmup(event):
-    return event.get("source", "") == "serverless-plugin-warmup"
+    return event.get('source', '') == "serverless-plugin-warmup"
 
 def main(event, context):
     if is_warmup(event):
         return "Warm"
 
-    """
-    Send Slack Message to Alarms Channel
-    """
+    sns = event['Records'][0]['Sns']
+    json_msg = json.loads(sns['Message'])
 
-    sns = event["Records"][0]["Sns"]
-    json_msg = json.loads(sns["Message"])
-
-    if sns["Subject"]:
-        message = sns["Subject"]
+    if sns['Subject']:
+        message = sns['Subject']
     else:
-        message = sns["Message"]
-    event_cond = json_msg["NewStateValue"]
+        message = sns['Message']
+    event_cond = json_msg['NewStateValue']
     color_map = {
         "ALARM": "danger",
         "INSUFFICIENT_DATA": "warning",
@@ -44,25 +40,23 @@ def main(event, context):
         "color": color_map[event_cond],
         "fields": [{
             "title": "Alarm Metric",
-            "value": json_msg["Trigger"]["MetricName"],
+            "value": json_msg['Trigger']['MetricName'],
             "short": True
         }, {
             "title": "Status",
-            "value": json_msg["NewStateValue"],
+            "value": json_msg['NewStateValue'],
             "short": True
         }, {
             "title": "Function name",
-            "value": json_msg["Trigger"]["Dimensions"][0]["value"],
+            "value": json_msg['Trigger']['Dimensions'][0]['value'],
             "short": False
         }, {
             "title": "Trigger",
-            "value": json_msg["NewStateReason"],
+            "value": json_msg['NewStateReason'],
             "short": False
         }]
     }]
 
-    region = sns["TopicArn"].split(":")[3]
-    topic_name = sns["TopicArn"].split(":")[-1]
     payload = {
         "icon_emoji": emoji_map[event_cond],
         "text": "AWS CloudWatch Notification",
